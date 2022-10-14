@@ -1,3 +1,6 @@
+package CarObject;
+
+import CarObject.Car;
 
 public class MainCar {
     public static void main(String[] args) {
@@ -12,7 +15,7 @@ public class MainCar {
 
 
 
-       /* Car car2= new Car();
+       /* CarObject.Car car2= new CarObject.Car();
         car2.model= "B";
         car2.speed= 20;
         car2.speed= car2.increaseSpeed(80);
@@ -20,7 +23,7 @@ public class MainCar {
         car2.speed= car2.decreaseSpeed(50);
         System.out.println(car2.model +" Hızı: " +car2.speed);
 
-        Car car3= new Car();
+        CarObject.Car car3= new CarObject.Car();
         car3.model= "C";
         car3.speed= 25;
         System.out.println(car3.model +" Hızı: " +car3.speed);*/
