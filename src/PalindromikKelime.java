@@ -19,11 +19,8 @@ public class PalindromikKelime {
         }
         return kelime.equals(reverse);
     }
-
-
     public static void main(String[] args) {
         System.out.println(isPolindrome("abba"));
         System.out.println(isPolindrome2("kaykay"));
-
     }
 }
