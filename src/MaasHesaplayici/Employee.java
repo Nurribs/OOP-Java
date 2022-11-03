@@ -20,7 +20,7 @@ public class Employee {
         }
         else {
             double vergi= this.salary*0.03;
-            return this.salary - vergi;
+            return this.salary-vergi;
         }
     }
 
