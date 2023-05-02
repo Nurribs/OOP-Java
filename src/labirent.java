@@ -1,13 +1,18 @@
-package LabirentOyunu;
-
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.URL;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class labirent {
     private int lab[][] = {
-            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},  //0. satır
-            {0, 0, 0, 0, 1, 0, 0, 0, 0, 1},  //1.satır
-            {1, 1, 1, 0, 1, 0, 1, 1, 0, 1},  //2.satır
-            {1, 0, 0, 0, 1, 0, 0, 1, 0, 1},  //3.satır
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            {0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+            {1, 1, 1, 0, 1, 0, 1, 1, 0, 1},
+            {1, 0, 0, 0, 1, 0, 0, 1, 0, 1},
             {1, 0, 0, 0, 0, 0, 1, 1, 0, 1},
             {1, 0, 1, 1, 1, 0, 0, 1, 1, 1},
             {1, 0, 0, 0, 0, 0, 1, 0, 0, 1},
@@ -15,93 +20,117 @@ public class labirent {
             {1, 0, 0, 0, 0, 0, 0, 0, 0, 1},
             {1, 1, 1, 1, 1, 1, 1, 1, 0, 1}
     };
+    int baslangicSatir = 1, baslangicSutun = 0;
+List<String> yonler = Arrays.asList("Sola", "Sağa", "Yukarı", "Aşağı", "ÇIKIŞ");
+private ImageIcon fareResmi = new ImageIcon("fare.png");
 
-    int baslamaSatir = 1, baslamaSutun = 0;  //indeks
+public String fareResmiYoluAl(){
+    URL url = getClass().getResource("fare.png");
+    return url == null ? "" : url.toString();
+}
 
-    Object stic[] = {"Sola", "Sağa", "Yukarı", "Aşağı", "ÇIKIŞ"};
+public void oyunuBaslat() {
+    JFrame pencere = new JFrame("LABİRENT");
+    pencere.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    pencere.setSize(600, 600);
 
-    public String ekranAl() {
-        String ekran = "<html><table>";
-        for (int satir = 0; satir < lab.length; satir++) {
-            ekran += "<tr>";
-            for (int sutun = 0; sutun < lab[satir].length; sutun++) {
-                if (lab[satir][sutun] == 1) {
-                    ekran += "<td bgcolor='red' width=25></td>";
-                } else if (lab[satir][sutun] == 0) {
-                    ekran += "<td bgcolor='white' width=25></td>";
-                } else {
-                    ekran += "<td bgcolor='blue' width=25></td>";
-                }
-            }
-            ekran += "</tr>";
-        }
-        ekran += "</table></html>";
-        System.out.println(ekran);
-        return ekran;
-    }
+    JPanel butonPaneli = new JPanel();
+    butonPaneli.setLayout(new FlowLayout(FlowLayout.CENTER));
+    butonPaneli.setBackground(Color.DARK_GRAY);
 
-    public void oyunuBaslat() {
-        lab[baslamaSatir][baslamaSutun] = -1;
-        int oyuncuSecim;
-        while (lab[9][8] != -1) {
-            oyuncuSecim = JOptionPane.showOptionDialog(null, ekranAl(), "LABİRENT",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
-                    null, stic, stic[4]);
-            lab[baslamaSatir][baslamaSutun] = 0;
-            switch (oyuncuSecim) {
-                case 0:
+    ActionListener butonDinleyici = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String butonMetni = ((JButton) e.getSource()).getText();
+
+            lab[baslangicSatir][baslangicSutun] = 0;
+
+            switch (butonMetni) {
+                case "Sola":
                     solaGit();
                     break;
-                case 1:
+                case "Sağa":
                     sagaGit();
                     break;
-                case 2:
+                case "Yukarı":
                     yukariGit();
                     break;
-                case 3:
+                case "Aşağı":
                     asagiGit();
                     break;
-                case 4:
+                case "ÇIKIŞ":
                     System.exit(0);
                     break;
             }
-            lab[baslamaSatir][baslamaSutun] = -1;
-            if (lab[9][8] == -1){
-                JOptionPane.showMessageDialog(null,"TEBRİKLER, ÇIKIŞA ULAŞTINIZ!!");
+            lab[baslangicSatir][baslangicSutun] = -1;
+            if (lab[9][8] == -1) {
+                JOptionPane.showMessageDialog(pencere, "TEBRİKLER, ÇIKIŞA ULAŞTINIZ!!");
+                System.exit(0);
+            }
+            pencere.repaint();
+        }
+    };
+
+    for (String s : yonler) {
+        JButton btn = new JButton(s);
+        btn.addActionListener(butonDinleyici);
+        btn.setBackground(Color.LIGHT_GRAY);
+        btn.setForeground(Color.BLACK);
+        butonPaneli.add(btn);
+    }
+
+    pencere.add(butonPaneli, BorderLayout.SOUTH);
+
+    JPanel labirentPaneli = new JPanel() {
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            for (int satir = 0; satir < lab.length; satir++) {
+                for (int sutun = 0; sutun < lab[satir].length; sutun++) {
+                    if (lab[satir][sutun] == 1) {
+                        g.setColor(Color.RED);
+                        g.fillRect(sutun * 50, satir * 50, 50, 50);
+                    } else if (lab[satir][sutun] == -1) {
+                        g.drawImage(fareResmi.getImage(), sutun * 50, satir * 50, 50, 50, this);
+                    } else {
+                        g.setColor(Color.WHITE);
+                        g.fillRect(sutun * 50, satir * 50, 50, 50);
+                    }
+                }
             }
         }
-        JOptionPane.showMessageDialog(null,"OYUN BİTTİ.");
-    }
+    };
 
-    public void solaGit(){
-        baslamaSutun--;
-        if (baslamaSutun== -1 || lab[baslamaSatir][baslamaSutun]== 1)
-            baslamaSutun++;
-    }
-
-    public void sagaGit(){
-        baslamaSutun++;
-        if (baslamaSutun== lab[baslamaSatir].length || lab[baslamaSatir][baslamaSutun]== 1)
-            baslamaSutun--;
-    }
-
-    public void yukariGit(){
-        baslamaSatir--;
-        if (baslamaSatir== -1 || lab[baslamaSatir][baslamaSutun]== 1)
-            baslamaSatir++;
-    }
-
-    public void asagiGit(){
-        baslamaSatir++;
-        if (baslamaSatir== lab.length || lab[baslamaSatir][baslamaSutun]== 1)
-            baslamaSatir--;
-    }
-
-    public static void main(String[] args){
-        labirent oyun= new labirent();
-        oyun.oyunuBaslat();
-
-    }
-
+    pencere.add(labirentPaneli, BorderLayout.CENTER);
+    pencere.setVisible(true);
 }
 
+public void solaGit() {
+    baslangicSutun--;
+    if (baslangicSutun == -1 || lab[baslangicSatir][baslangicSutun] == 1)
+    baslangicSutun++;
+    }
+    
+    public void sagaGit() {
+    baslangicSutun++;
+    if (baslangicSutun == lab[baslangicSatir].length || lab[baslangicSatir][baslangicSutun] == 1)
+    baslangicSutun--;
+    }
+    
+    public void yukariGit() {
+    baslangicSatir--;
+    if (baslangicSatir == -1 || lab[baslangicSatir][baslangicSutun] == 1)
+    baslangicSatir++;
+    }
+    
+    public void asagiGit() {
+    baslangicSatir++;
+    if (baslangicSatir == lab.length || lab[baslangicSatir][baslangicSutun] == 1)
+    baslangicSatir--;
+    }
+    
+    public static void main(String[] args) {
+    labirent oyun = new labirent();
+    oyun.oyunuBaslat();
+    }
+}
